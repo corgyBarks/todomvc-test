@@ -7,9 +7,9 @@ build/
 /.idea/
 /target/
 *.iml
-.gradle
 /build/
 **/.DS_Store
+.idea/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -17,7 +17,6 @@ build/
 .idea/compiler.xml
 .idea/libraries/
 *.iws
-*.iml
 *.ipr
 out/
 !**/src/main/**/out/

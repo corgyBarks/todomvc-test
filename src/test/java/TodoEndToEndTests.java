@@ -1,6 +1,3 @@
-package exercise1;
-
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -11,8 +8,7 @@ import static com.codeborne.selenide.Selenide.*;
 public class TodoEndToEndTests {
 
     @Test
-    public void basicEndToEndTestCase() {
-//        Configuration.timeout = 6000;
+    public void crudEndToEndTestCase() {
         open("http://todomvc4tasj.herokuapp.com/");
         Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
                 "return Object.keys(require.s.contexts._.defined).length === 39;"));
