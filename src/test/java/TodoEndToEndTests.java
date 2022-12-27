@@ -20,24 +20,24 @@ public class TodoEndToEndTests {
         $("#new-todo").setValue("c").pressEnter();
         $$("#todo-list li").shouldHave(exactTexts("a", "b", "c"));
 
-        $$("#todo-list>li").findBy(exactText("b")).doubleClick();
-        $$("#todo-list>li").findBy(cssClass("editing"))
+        $$("#todo-list li").findBy(exactText("b")).doubleClick();
+        $$("#todo-list li").findBy(cssClass("editing"))
                 .find(" .edit")
                 .append(" edited").pressEnter();
 
-        $$("#todo-list>li").findBy(exactText("b edited"))
+        $$("#todo-list li").findBy(exactText("b edited"))
                 .find(" .toggle").click();
         $("#clear-completed").click();
-        $$("#todo-list>li").shouldBe(exactTexts("a","c"));
+        $$("#todo-list li").shouldHave(exactTexts("a","c"));
 
-        $$("#todo-list>li").findBy(exactText("c")).doubleClick();
-        $$("#todo-list>li").findBy(cssClass("editing"))
+        $$("#todo-list li").findBy(exactText("c")).doubleClick();
+        $$("#todo-list li").findBy(cssClass("editing"))
                 .find(" .edit")
                 .append(" to be canceled").pressEscape();
 
-        $$("#todo-list>li").findBy(exactText("c")).hover()
+        $$("#todo-list li").findBy(exactText("c")).hover()
                 .find(".destroy").click();
-        $$("#todo-list>li").shouldHave(exactTexts("a"));
+        $$("#todo-list li").shouldHave(exactTexts("a"));
 
 
     }
