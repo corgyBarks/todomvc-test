@@ -1,4 +1,6 @@
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -8,6 +10,7 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TodoEndToEndTests {
+    private static final ElementsCollection taskLine = $$("#todo-list li");
 
     @Test
     public void todosLifeCycle() {
@@ -15,31 +18,51 @@ public class TodoEndToEndTests {
         Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
                 "return Object.keys(require.s.contexts._.defined).length === 39;"));
 
-        $("#new-todo").setValue("a").pressEnter();
-        $("#new-todo").setValue("b").pressEnter();
-        $("#new-todo").setValue("c").pressEnter();
-        $$("#todo-list li").shouldHave(exactTexts("a", "b", "c"));
+        add("a", "b", "c");
 
-        $$("#todo-list li").findBy(exactText("b")).doubleClick();
-        $$("#todo-list li").findBy(cssClass("editing"))
-                .find(" .edit")
-                .append(" edited").pressEnter();
+        taskLine.shouldHave(exactTexts("a", "b", "c"));
 
-        $$("#todo-list li").findBy(exactText("b edited"))
-                .find(" .toggle").click();
-        $("#clear-completed").click();
-        $$("#todo-list li").shouldHave(exactTexts("a","c"));
+        doubleClickOnTaskWithText("b");
+        changeTextInTaskTo(" edited").pressEnter();
 
-        $$("#todo-list li").findBy(exactText("c")).doubleClick();
-        $$("#todo-list li").findBy(cssClass("editing"))
-                .find(" .edit")
-                .append(" to be canceled").pressEscape();
+        completeTaskWithText("b edited");
+        clearAllCompletedTasks();
+        taskLine.shouldHave(exactTexts("a", "c"));
 
-        $$("#todo-list li").findBy(exactText("c")).hover()
+        doubleClickOnTaskWithText("c");
+        changeTextInTaskTo(" to be canceled").pressEscape();
+
+        deleteTaskWithText("c");
+        taskLine.shouldHave(exactTexts("a"));
+
+    }
+
+    private void deleteTaskWithText(String text){
+        taskLine.findBy(exactText(text)).hover()
                 .find(".destroy").click();
-        $$("#todo-list li").shouldHave(exactTexts("a"));
+    }
+    private void clearAllCompletedTasks(){
+        $("#clear-completed").click();
+    }
 
+    private void completeTaskWithText(String text){
+        taskLine.findBy(exactText(text))
+                .find(" .toggle").click();
+    }
+    private SelenideElement changeTextInTaskTo(String text) {
+        return taskLine.findBy(cssClass("editing"))
+                .find(" .edit")
+                .append(text);
+    }
 
+    private void doubleClickOnTaskWithText(String text) {
+        $$("#todo-list li").findBy(exactText(text)).doubleClick();
+    }
+
+    private void add(String... taskText) {
+        for (String text : taskText) {
+            $("#new-todo").setValue(text).pressEnter();
+        }
     }
 
 }
