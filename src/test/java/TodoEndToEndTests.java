@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TodoEndToEndTests {
-    private static final ElementsCollection todoList = $$("#todo-list li");
+    private static final ElementsCollection todos = $$("#todo-list li");
 
     @Test
     public void todosLifeCycle() {
@@ -19,46 +19,39 @@ public class TodoEndToEndTests {
                 "return Object.keys(require.s.contexts._.defined).length === 39;"));
 
         add("a", "b", "c");
-        verifyTodoListHaveTexts("a", "b", "c");
+        assertTodos("a", "b", "c");
 
-        doubleClickOnTaskWithText("b");
+        doubleClickOnTask("b");
         changeTextInTaskTo(" edited").pressEnter();
 
-        completeTaskWithText("b edited");
-        clearAllCompletedTasks();
-        verifyTodoListHaveTexts("a", "c");
+        todo("b edited").find(" .toggle").click();
+        $("#clear-completed").click();
+        assertTodos("a", "c");
 
-        doubleClickOnTaskWithText("c");
+        doubleClickOnTask("c");
         changeTextInTaskTo(" to be canceled").pressEscape();
 
-        deleteTaskWithText("c");
-        verifyTodoListHaveTexts("a");
+        todo("c").hover().find(".destroy").click();
+        assertTodos("a");
 
     }
 
-    private void verifyTodoListHaveTexts(String... texts){
-        todoList.shouldHave(exactTexts(texts));
-    }
-    private void deleteTaskWithText(String text){
-        todoList.findBy(exactText(text)).hover()
-                .find(".destroy").click();
-    }
-    private void clearAllCompletedTasks(){
-        $("#clear-completed").click();
+    private void assertTodos(String... texts) {
+        todos.shouldHave(exactTexts(texts));
     }
 
-    private void completeTaskWithText(String text){
-        todoList.findBy(exactText(text))
-                .find(" .toggle").click();
+    private SelenideElement todo(String text) {
+        return todos.findBy(exactText(text));
     }
+
     private SelenideElement changeTextInTaskTo(String text) {
-        return todoList.findBy(cssClass("editing"))
+        return todos.findBy(cssClass("editing"))
                 .find(" .edit")
                 .append(text);
     }
 
-    private void doubleClickOnTaskWithText(String text) {
-        $$("#todo-list li").findBy(exactText(text)).doubleClick();
+    private void doubleClickOnTask(String text) {
+        todo(text).doubleClick();
     }
 
     private void add(String... taskText) {
