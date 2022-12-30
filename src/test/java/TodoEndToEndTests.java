@@ -19,24 +19,26 @@ public class TodoEndToEndTests {
                 "return Object.keys(require.s.contexts._.defined).length === 39;"));
 
         add("a", "b", "c");
-
-        todoList.shouldHave(exactTexts("a", "b", "c"));
+        verifyTodoListHaveTexts("a", "b", "c");
 
         doubleClickOnTaskWithText("b");
         changeTextInTaskTo(" edited").pressEnter();
 
         completeTaskWithText("b edited");
         clearAllCompletedTasks();
-        todoList.shouldHave(exactTexts("a", "c"));
+        verifyTodoListHaveTexts("a", "c");
 
         doubleClickOnTaskWithText("c");
         changeTextInTaskTo(" to be canceled").pressEscape();
 
         deleteTaskWithText("c");
-        todoList.shouldHave(exactTexts("a"));
+        verifyTodoListHaveTexts("a");
 
     }
 
+    private void verifyTodoListHaveTexts(String... texts){
+        todoList.shouldHave(exactTexts(texts));
+    }
     private void deleteTaskWithText(String text){
         todoList.findBy(exactText(text)).hover()
                 .find(".destroy").click();
