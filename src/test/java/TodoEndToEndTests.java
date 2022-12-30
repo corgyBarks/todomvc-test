@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TodoEndToEndTests {
-    private static final ElementsCollection taskLine = $$("#todo-list li");
+    private static final ElementsCollection todoList = $$("#todo-list li");
 
     @Test
     public void todosLifeCycle() {
@@ -20,25 +20,25 @@ public class TodoEndToEndTests {
 
         add("a", "b", "c");
 
-        taskLine.shouldHave(exactTexts("a", "b", "c"));
+        todoList.shouldHave(exactTexts("a", "b", "c"));
 
         doubleClickOnTaskWithText("b");
         changeTextInTaskTo(" edited").pressEnter();
 
         completeTaskWithText("b edited");
         clearAllCompletedTasks();
-        taskLine.shouldHave(exactTexts("a", "c"));
+        todoList.shouldHave(exactTexts("a", "c"));
 
         doubleClickOnTaskWithText("c");
         changeTextInTaskTo(" to be canceled").pressEscape();
 
         deleteTaskWithText("c");
-        taskLine.shouldHave(exactTexts("a"));
+        todoList.shouldHave(exactTexts("a"));
 
     }
 
     private void deleteTaskWithText(String text){
-        taskLine.findBy(exactText(text)).hover()
+        todoList.findBy(exactText(text)).hover()
                 .find(".destroy").click();
     }
     private void clearAllCompletedTasks(){
@@ -46,11 +46,11 @@ public class TodoEndToEndTests {
     }
 
     private void completeTaskWithText(String text){
-        taskLine.findBy(exactText(text))
+        todoList.findBy(exactText(text))
                 .find(" .toggle").click();
     }
     private SelenideElement changeTextInTaskTo(String text) {
-        return taskLine.findBy(cssClass("editing"))
+        return todoList.findBy(cssClass("editing"))
                 .find(" .edit")
                 .append(text);
     }
