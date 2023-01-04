@@ -21,19 +21,22 @@ public class TodoEndToEndTests {
         add("a", "b", "c");
         assertTodos("a", "b", "c");
 
-        doubleClickOnTask("b");
-        changeTextInTaskTo(" edited").pressEnter();
+        startEdit("b", " edited").pressEnter();
 
         todo("b edited").find(" .toggle").click();
         $("#clear-completed").click();
         assertTodos("a", "c");
 
-        doubleClickOnTask("c");
-        changeTextInTaskTo(" to be canceled").pressEscape();
+        startEdit("c", " to be canceled").pressEscape();
 
         todo("c").hover().find(".destroy").click();
         assertTodos("a");
 
+    }
+
+    private SelenideElement startEdit(String oldText, String textToAdd) {
+        doubleClickOnTask(oldText);
+        return changeTextInTaskTo(textToAdd);
     }
 
     private void assertTodos(String... texts) {
@@ -54,8 +57,8 @@ public class TodoEndToEndTests {
         todo(text).doubleClick();
     }
 
-    private void add(String... taskText) {
-        for (String text : taskText) {
+    private void add(String... texts) {
+        for (String text : texts) {
             $("#new-todo").setValue(text).pressEnter();
         }
     }
