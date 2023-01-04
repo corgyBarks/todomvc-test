@@ -1,3 +1,6 @@
+package com.taotas.todomvctest;
+
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
@@ -10,8 +13,6 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TodoEndToEndTests {
-    private static final ElementsCollection todos = $$("#todo-list li");
-
     @Test
     public void todosLifeCycle() {
         open("http://todomvc4tasj.herokuapp.com/");
@@ -34,6 +35,8 @@ public class TodoEndToEndTests {
 
     }
 
+    private static final ElementsCollection todos = $$("#todo-list li");
+
     private SelenideElement startEdit(String oldText, String textToAdd) {
         doubleClickOnTask(oldText);
         return changeTextInTaskTo(textToAdd);
@@ -43,12 +46,16 @@ public class TodoEndToEndTests {
         todos.shouldHave(exactTexts(texts));
     }
 
+    private SelenideElement todoBy(Condition condition){
+        return todos.findBy(condition);
+    }
+
     private SelenideElement todo(String text) {
-        return todos.findBy(exactText(text));
+        return todoBy(exactText(text));
     }
 
     private SelenideElement changeTextInTaskTo(String text) {
-        return todos.findBy(cssClass("editing"))
+        return todoBy(cssClass("editing"))
                 .find(" .edit")
                 .append(text);
     }
