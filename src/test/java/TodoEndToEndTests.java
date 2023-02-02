@@ -1,3 +1,4 @@
+import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -10,20 +11,23 @@ public class TodoEndToEndTests {
 
     @Test
     public void todosLifeCycle() {
+        Configuration.fastSetValue = true;
         openTodoPage();
-        addTodo("a");
-        addTodo("b");
-        addTodo("c");
+
+        add("a", "b", "c");
         verifyTodosDisplayed("a", "b", "c");
-        editTodoWithText("b", " edited");
-        completeTodo("b edited");
-        clearCompletedTodos();
+
+        edit("b", "b edited");
+
+        toggle("b edited");
+        clearCompleted();
         verifyTodosDisplayed("a", "c");
-        cancelEditTodo("c", " to be canceled");
-        deleteTodo("c");
+
+        cancelEdit("c", " to be canceled");
+
+        delete("c");
         verifyTodosDisplayed("a");
     }
-
 
     private void openTodoPage() {
         open("http://todomvc4tasj.herokuapp.com/");
@@ -31,39 +35,41 @@ public class TodoEndToEndTests {
                 "return Object.keys(require.s.contexts._.defined).length === 39;"));
     }
 
-    private void addTodo(String text) {
-        $("#new-todo").setValue(text).pressEnter();
+    private void add(String... texts) {
+        for(String text: texts) {
+            $("#new-todo").setValue(text).pressEnter();
+        }
     }
 
     private void verifyTodosDisplayed(String... todoTexts) {
         $$("#todo-list li").shouldHave(exactTexts(todoTexts));
     }
 
-    private void editTodoWithText(String originalText, String editedText) {
-        $$("#todo-list li").findBy(exactText(originalText)).doubleClick();
-        $$("#todo-list li").findBy(cssClass("editing"))
+    private void edit(String originalText, String editedText) {
+        $$("#todo-list>li").findBy(exactText(originalText)).doubleClick();
+        $$("#todo-list>li").findBy(cssClass("editing"))
                 .find(" .edit")
-                .append(editedText).pressEnter();
+                .setValue(editedText).pressEnter();
     }
 
-    private void completeTodo(String text) {
+    private void toggle(String text) {
         $$("#todo-list li").findBy(exactText(text))
                 .find(" .toggle").click();
 
     }
 
-    private void clearCompletedTodos() {
+    private void clearCompleted() {
         $("#clear-completed").click();
     }
 
-    private void cancelEditTodo(String originalText, String editedText) {
-        $$("#todo-list li").findBy(exactText(originalText)).doubleClick();
-        $$("#todo-list li").findBy(cssClass("editing"))
+    private void cancelEdit(String originalText, String editedText) {
+        $$("#todo-list>li").findBy(exactText(originalText)).doubleClick();
+        $$("#todo-list>li").findBy(cssClass("editing"))
                 .find(" .edit")
                 .append(editedText).pressEscape();
     }
 
-    private void deleteTodo(String text) {
+    private void delete(String text) {
         $$("#todo-list li").findBy(exactText(text)).hover()
                 .find(".destroy").click();
     }
