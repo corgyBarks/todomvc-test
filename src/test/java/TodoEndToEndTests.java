@@ -60,7 +60,7 @@ public class TodoEndToEndTests {
     }
 
     private void toggle(String text) {
-        todo(text).find(TOGGLE).click();
+        todos.findBy(exactText(text)).find(TOGGLE).click();
 
     }
 
@@ -73,22 +73,15 @@ public class TodoEndToEndTests {
     }
 
     private void delete(String text) {
-        todo(text).hover()
+        todos.findBy(exactText(text)).hover()
                 .find(DESTROY).click();
     }
     private SelenideElement startEdit(String text, String newText) {
-        doubleClickOnTask(text);
+        todos.findBy(exactText(text)).doubleClick();
         return todos.findBy(cssClass(EDITING))
                 .find(EDIT)
                 .execute(new SetValueByJs(newText));
     }
-    private SelenideElement todo(String text) {
-        return todos.findBy(exactText(text));
-    }
-    private void doubleClickOnTask(String text) {
-        todo(text).doubleClick();
-    }
-
     public static class SetValueByJs implements Command<SelenideElement> {
         private final JavaScript js = new JavaScript("set-value-without-blur.js");
         private final String text;
