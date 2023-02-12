@@ -81,15 +81,12 @@ public class TodoEndToEndTests {
         return changeTextInTaskTo(newText);
     }
     private SelenideElement changeTextInTaskTo(String text) {
-        return todoBy(cssClass(EDITING))
+        return todos.findBy(cssClass(EDITING))
                 .find(EDIT)
                 .execute(new SetValueByJs(text));
     }
-    private SelenideElement todoBy(Condition condition){
-        return todos.findBy(condition);
-    }
     private SelenideElement todo(String text) {
-        return todoBy(exactText(text));
+        return todos.findBy(exactText(text));
     }
     private void doubleClickOnTask(String text) {
         todo(text).doubleClick();
