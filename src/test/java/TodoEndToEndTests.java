@@ -13,7 +13,12 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TodoEndToEndTests {
-
+    private static final String NEW_TODO_INPUT = "#new-todo";
+    private static final String CLEAR_COMPLETED = "#clear-completed";
+    private static final String EDIT = ".edit";
+    private static final String TOGGLE = ".toggle";
+    private static final String DESTROY = ".destroy";
+    private static final String EDITING = "editing";
     @Test
     public void todosLifeCycle() {
         Configuration.fastSetValue = true;
@@ -33,7 +38,7 @@ public class TodoEndToEndTests {
         delete("c");
         todosShouldBe("a");
     }
-
+    private static final ElementsCollection todos = $$("#todo-list li");
     private void openTodoPage() {
         open("http://todomvc4tasj.herokuapp.com/");
         Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
@@ -42,41 +47,52 @@ public class TodoEndToEndTests {
 
     private void add(String... texts) {
         for(String text: texts) {
-            $("#new-todo").setValue(text).pressEnter();
+            $(NEW_TODO_INPUT).setValue(text).pressEnter();
         }
     }
 
     private void todosShouldBe(String... todoTexts) {
-        $$("#todo-list li").shouldHave(exactTexts(todoTexts));
+        todos.shouldHave(exactTexts(todoTexts));
     }
 
     private void edit(String text, String editedText) {
-        $$("#todo-list>li").findBy(exactText(text)).doubleClick();
-        $$("#todo-list>li").findBy(cssClass("editing"))
-                .find(" .edit")
-                .execute(new SetValueByJs(editedText)).pressEnter();
+        startEdit(text, editedText).pressEnter();
     }
 
     private void toggle(String text) {
-        $$("#todo-list li").findBy(exactText(text))
-                .find(" .toggle").click();
+        todo(text).find(TOGGLE).click();
 
     }
 
     private void clearCompleted() {
-        $("#clear-completed").click();
+        $(CLEAR_COMPLETED).click();
     }
 
     private void cancelEdit(String text, String editedText) {
-        $$("#todo-list>li").findBy(exactText(text)).doubleClick();
-        $$("#todo-list>li").findBy(cssClass("editing"))
-                .find(" .edit")
-                .execute(new SetValueByJs(editedText)).pressEscape();
+        startEdit(text, editedText).pressEscape();
     }
 
     private void delete(String text) {
-        $$("#todo-list li").findBy(exactText(text)).hover()
-                .find(".destroy").click();
+        todo(text).hover()
+                .find(DESTROY).click();
+    }
+    private SelenideElement startEdit(String text, String newText) {
+        doubleClickOnTask(text);
+        return changeTextInTaskTo(newText);
+    }
+    private SelenideElement changeTextInTaskTo(String text) {
+        return todoBy(cssClass(EDITING))
+                .find(EDIT)
+                .execute(new SetValueByJs(text));
+    }
+    private SelenideElement todoBy(Condition condition){
+        return todos.findBy(condition);
+    }
+    private SelenideElement todo(String text) {
+        return todoBy(exactText(text));
+    }
+    private void doubleClickOnTask(String text) {
+        todo(text).doubleClick();
     }
 
     public static class SetValueByJs implements Command<SelenideElement> {
