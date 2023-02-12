@@ -1,10 +1,15 @@
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.*;
+import com.codeborne.selenide.impl.JavaScript;
+import com.codeborne.selenide.impl.WebElementSource;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import javax.annotation.Nonnull;
+
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.cssClass;
+import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TodoEndToEndTests {
@@ -15,18 +20,18 @@ public class TodoEndToEndTests {
         openTodoPage();
 
         add("a", "b", "c");
-        verifyTodosDisplayed("a", "b", "c");
+        todosShouldBe("a", "b", "c");
 
         edit("b", "b edited");
 
         toggle("b edited");
         clearCompleted();
-        verifyTodosDisplayed("a", "c");
+        todosShouldBe("a", "c");
 
         cancelEdit("c", " to be canceled");
 
         delete("c");
-        verifyTodosDisplayed("a");
+        todosShouldBe("a");
     }
 
     private void openTodoPage() {
@@ -41,15 +46,15 @@ public class TodoEndToEndTests {
         }
     }
 
-    private void verifyTodosDisplayed(String... todoTexts) {
+    private void todosShouldBe(String... todoTexts) {
         $$("#todo-list li").shouldHave(exactTexts(todoTexts));
     }
 
-    private void edit(String originalText, String editedText) {
-        $$("#todo-list>li").findBy(exactText(originalText)).doubleClick();
+    private void edit(String text, String editedText) {
+        $$("#todo-list>li").findBy(exactText(text)).doubleClick();
         $$("#todo-list>li").findBy(cssClass("editing"))
                 .find(" .edit")
-                .setValue(editedText).pressEnter();
+                .execute(new SetValueByJs(editedText)).pressEnter();
     }
 
     private void toggle(String text) {
@@ -62,15 +67,32 @@ public class TodoEndToEndTests {
         $("#clear-completed").click();
     }
 
-    private void cancelEdit(String originalText, String editedText) {
-        $$("#todo-list>li").findBy(exactText(originalText)).doubleClick();
+    private void cancelEdit(String text, String editedText) {
+        $$("#todo-list>li").findBy(exactText(text)).doubleClick();
         $$("#todo-list>li").findBy(cssClass("editing"))
                 .find(" .edit")
-                .append(editedText).pressEscape();
+                .execute(new SetValueByJs(editedText)).pressEscape();
     }
 
     private void delete(String text) {
         $$("#todo-list li").findBy(exactText(text)).hover()
                 .find(".destroy").click();
+    }
+
+    public static class SetValueByJs implements Command<SelenideElement> {
+        private final JavaScript js = new JavaScript("set-value-without-blur.js");
+        private final String text;
+
+        public SetValueByJs(String text) {
+            this.text = text;
+        }
+        @Override
+        @Nonnull
+        public SelenideElement execute(SelenideElement proxy, WebElementSource locator, Object[] args) {
+            Driver driver = locator.driver();
+            WebElement element = locator.findAndAssertElementIsEditable();
+            this.js.execute(driver, element, this.text);
+            return proxy;
+        }
     }
 }
