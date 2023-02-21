@@ -14,7 +14,7 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class TodoEndToEndTests {
+public class TodoEndToEndTests extends BaseTest{
     @Test
     public void todosLifeCycle() {
         Configuration.fastSetValue = true;
@@ -38,7 +38,7 @@ public class TodoEndToEndTests {
     private static final ElementsCollection todos = $$("#todo-list li");
 
     private void open() {
-        Selenide.open("http://todomvc4tasj.herokuapp.com/");
+        Selenide.open("/");
         Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
                 "return Object.keys(require.s.contexts._.defined).length === 39;"));
     }
