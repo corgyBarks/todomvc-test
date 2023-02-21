@@ -34,7 +34,9 @@ public class TodoEndToEndTests {
         delete("c");
         todosShouldBe("a");
     }
+
     private static final ElementsCollection todos = $$("#todo-list li");
+
     private void open() {
         Selenide.open("http://todomvc4tasj.herokuapp.com/");
         Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
@@ -42,7 +44,7 @@ public class TodoEndToEndTests {
     }
 
     private void add(String... texts) {
-        for(String text: texts) {
+        for (String text : texts) {
             $("#new-todo").setValue(text).pressEnter();
         }
     }
@@ -72,6 +74,7 @@ public class TodoEndToEndTests {
         todos.findBy(exactText(text)).hover()
                 .find(".destroy").click();
     }
+
     private SelenideElement startEdit(String text, String newText) {
         todos.findBy(exactText(text)).doubleClick();
         return todos.findBy(cssClass("editing"))
