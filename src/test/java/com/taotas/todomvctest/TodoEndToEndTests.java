@@ -14,10 +14,9 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class TodoEndToEndTests extends BaseTest{
+public class TodoEndToEndTests extends BaseTest {
     @Test
     public void todosLifeCycle() {
-        Configuration.fastSetValue = true;
         open();
 
         add("a", "b", "c");
