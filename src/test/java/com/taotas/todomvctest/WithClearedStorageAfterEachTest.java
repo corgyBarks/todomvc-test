@@ -1,23 +1,17 @@
 package com.taotas.todomvctest;
 
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.WebDriverRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-
-import static com.codeborne.selenide.Selenide.executeJavaScript;
 
 public class WithClearedStorageAfterEachTest extends BaseTest {
     @BeforeEach
     public void loadApp() {
-        open();
-        boolean hasLocalStorageData = executeJavaScript("return Object.keys(localStorage).length > 0");
-        if (hasLocalStorageData) {
-            clearData();
+        if (WebDriverRunner.hasWebDriverStarted()) {
+            Selenide.clearBrowserLocalStorage();
         }
-    }
-
-    public void clearData() {
-        Selenide.clearBrowserLocalStorage();
+        open();
     }
 
     private void open() {

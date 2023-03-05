@@ -33,13 +33,14 @@ public class TodoEndToEndTests extends WithClearedStorageAfterEachTest {
     public void filtersTasks() {
 
         add("a", "b", "c");
-        todosShouldBe("a", "b", "c");
 
         toggle("b");
-        selectActive();
+        todosShouldBe("a", "b", "c");
+
+        filterActive();
         todosShouldBe("a", "c");
 
-        selectCompleted();
+        filterCompleted();
         todosShouldBe("b");
     }
 
@@ -83,10 +84,12 @@ public class TodoEndToEndTests extends WithClearedStorageAfterEachTest {
                 .find(".edit")
                 .execute(Action.JS.setValue(newText));
     }
-    private void selectActive(){
-        $("#filters > li:nth-child(2)").click();
+
+    private void filterActive() {
+        $("[href*='#/active']").click();
     }
-    private void selectCompleted(){
-        $("#filters > li:nth-child(3)").click();
+
+    private void filterCompleted() {
+        $("[href*='#/completed']").click();
     }
 }
