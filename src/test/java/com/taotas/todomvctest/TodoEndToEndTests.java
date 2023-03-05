@@ -42,6 +42,9 @@ public class TodoEndToEndTests extends WithClearedStorageAfterEachTest {
 
         filterCompleted();
         todosShouldBe("b");
+
+        filterAll();
+        todosShouldBe("a", "b", "c");
     }
 
     public static final ElementsCollection todos = $$("#todo-list li");
@@ -91,5 +94,8 @@ public class TodoEndToEndTests extends WithClearedStorageAfterEachTest {
 
     private void filterCompleted() {
         $("[href*='#/completed']").click();
+    }
+    private void filterAll() {
+        $("[href*='#/']").click();
     }
 }
