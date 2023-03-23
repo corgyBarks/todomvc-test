@@ -17,7 +17,7 @@ public class TodoEndToEndTests extends BaseTest {
 
     @Test
     public void todosLifeCycle() {
-        loadApp();
+        openApp();
 
         add("a", "b", "c");
         todosShouldBe("a", "b", "c");
@@ -36,10 +36,9 @@ public class TodoEndToEndTests extends BaseTest {
 
     @Test
     public void filtersTasks() {
-        loadApp();
-        add("a", "b", "c");
-
+        givenAppOpenedWith("a", "b", "c");
         toggle("b");
+
         todosShouldBe("a", "b", "c");
 
         filterActive();
@@ -52,13 +51,17 @@ public class TodoEndToEndTests extends BaseTest {
         todosShouldBe("a", "b", "c");
     }
 
-    public void loadApp() {
-        if (WebDriverRunner.hasWebDriverStarted()) {
-            Selenide.clearBrowserLocalStorage();
-        }
+    private void openApp(){
         Selenide.open("/");
         Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
                 "return Object.keys(require.s.contexts._.defined).length === 39;"));
+    }
+    public void givenAppOpenedWith(String... texts) {
+        if (WebDriverRunner.hasWebDriverStarted()) {
+            Selenide.clearBrowserLocalStorage();
+        }
+        openApp();
+        add(texts);
     }
 
     public static final ElementsCollection todos = $$("#todo-list li");
