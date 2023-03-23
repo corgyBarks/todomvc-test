@@ -14,18 +14,6 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 public class TodoEndToEndTests extends BaseTest {
-    public void loadApp() {
-        if (WebDriverRunner.hasWebDriverStarted()) {
-            Selenide.clearBrowserLocalStorage();
-        }
-        open();
-    }
-
-    private void open() {
-        Selenide.open("/");
-        Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
-                "return Object.keys(require.s.contexts._.defined).length === 39;"));
-    }
 
     @Test
     public void todosLifeCycle() {
@@ -62,6 +50,15 @@ public class TodoEndToEndTests extends BaseTest {
 
         filterAll();
         todosShouldBe("a", "b", "c");
+    }
+
+    public void loadApp() {
+        if (WebDriverRunner.hasWebDriverStarted()) {
+            Selenide.clearBrowserLocalStorage();
+        }
+        Selenide.open("/");
+        Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
+                "return Object.keys(require.s.contexts._.defined).length === 39;"));
     }
 
     public static final ElementsCollection todos = $$("#todo-list li");
