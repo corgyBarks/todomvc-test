@@ -1,18 +1,35 @@
 package com.taotas.todomvctest;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.taotas.todomvctest.utils.Action;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class TodoEndToEndTests extends WithClearedStorageAfterEachTest {
+public class TodoEndToEndTests extends BaseTest {
+    public void loadApp() {
+        if (WebDriverRunner.hasWebDriverStarted()) {
+            Selenide.clearBrowserLocalStorage();
+        }
+        open();
+    }
+
+    private void open() {
+        Selenide.open("/");
+        Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
+                "return Object.keys(require.s.contexts._.defined).length === 39;"));
+    }
+
     @Test
     public void todosLifeCycle() {
+        loadApp();
 
         add("a", "b", "c");
         todosShouldBe("a", "b", "c");
@@ -31,7 +48,7 @@ public class TodoEndToEndTests extends WithClearedStorageAfterEachTest {
 
     @Test
     public void filtersTasks() {
-
+        loadApp();
         add("a", "b", "c");
 
         toggle("b");
@@ -95,6 +112,7 @@ public class TodoEndToEndTests extends WithClearedStorageAfterEachTest {
     private void filterCompleted() {
         $("[href*='#/completed']").click();
     }
+
     private void filterAll() {
         $("[href*='#/']").click();
     }
