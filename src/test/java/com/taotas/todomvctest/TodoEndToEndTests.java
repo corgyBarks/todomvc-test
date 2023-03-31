@@ -1,14 +1,12 @@
 package com.taotas.todomvctest;
 
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.WebDriverRunner;
+import com.codeborne.selenide.*;
 import com.taotas.todomvctest.utils.Action;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
+import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -17,7 +15,7 @@ public class TodoEndToEndTests extends BaseTest {
 
     @Test
     public void todosLifeCycle() {
-        openApp();
+        givenAppOpened();
 
         add("a", "b", "c");
         todosShouldBe("a", "b", "c");
@@ -39,8 +37,6 @@ public class TodoEndToEndTests extends BaseTest {
         givenAppOpenedWith("a", "b", "c");
         toggle("b");
 
-        todosShouldBe("a", "b", "c");
-
         filterActive();
         todosShouldBe("a", "c");
 
@@ -51,16 +47,117 @@ public class TodoEndToEndTests extends BaseTest {
         todosShouldBe("a", "b", "c");
     }
 
-    private void openApp(){
+    @Test
+    public void testAddingNewTask() {
+        givenAppOpened();
+
+        verifyTodosEmpty();
+        add("a");
+        todosShouldBe("a");
+        verifyCounter(1);
+    }
+
+    @Test
+    public void testEditingExistingTask() {
+        givenAppOpenedWith("a", "b", "c");
+        edit("b", "b edited");
+        todosShouldBe("a", "b edited", "c");
+    }
+
+    @Test
+    public void testChangingExistingTaskToEmpty() {
+        givenAppOpenedWith("a", "b", "c");
+        edit("b", "");
+        todosShouldBe("a", "c");
+    }
+
+    @Test
+    public void testCompletingTask() {
+        givenAppOpenedWith("a", "b", "c");
+        verifyCounter(3);
+        toggle("b");
+        verifyCounter(2);
+        completedTodosShouldBe("b");
+        todosShouldBe("a", "b", "c");
+    }
+
+    @Test
+    public void testCompletingAllTasks() {
+        givenAppOpenedWith("a", "b", "c");
+        completeAllTodos();
+        clearCompleted();
+        verifyTodosEmpty();
+    }
+
+    @Test
+    public void testUncompletingTask() {
+        givenAppOpenedWith("a", "b", "c");
+        verifyCounter(3);
+        toggle("b");
+        completedTodosShouldBe("b");
+        toggle("b");
+        completedTodosShouldBeEmpty();
+    }
+
+
+    @Test
+    public void testCancellingOfEditingTodo() {
+        givenAppOpenedWith("a", "b", "c");
+        cancelEdit("b", " to be canceled");
+        todosShouldBe("a", "b", "c");
+    }
+
+    @Test
+    public void testDeletingTodo() {
+        givenAppOpenedWith("a", "b", "c");
+        verifyCounter(3);
+        delete("b");
+        todosShouldBe("a", "c");
+        verifyCounter(2);
+    }
+
+    @Test
+    public void testDeletingOnlyOneAddedTodo() {
+        givenAppOpenedWith("a");
+        delete("a");
+        verifyTodosEmpty();
+    }
+
+    @Test
+    public void testClearingCompletedTodos() {
+        givenAppOpenedWith("a", "b", "c");
+        toggle("b");
+        clearCompleted();
+        todosShouldBe("a", "c");
+        completeAllTodos();
+        clearCompleted();
+        verifyTodosEmpty();
+    }
+
+    private void completeAllTodos() {
+        $("#toggle-all").click();
+    }
+
+    private void verifyCounter(int counter) {
+        var c = (counter == 1) ? "1 item left" : String.format("%d items left", counter);
+        $("#todo-count").shouldHave(text(c));
+    }
+
+    private void verifyTodosEmpty() {
+        todos.shouldHave(size(0));
+    }
+
+    private void givenAppOpened() {
+        if (WebDriverRunner.hasWebDriverStarted()) {
+            Selenide.clearBrowserLocalStorage();
+        }
         Selenide.open("/");
         Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
                 "return Object.keys(require.s.contexts._.defined).length === 39;"));
     }
+
     public void givenAppOpenedWith(String... texts) {
-        if (WebDriverRunner.hasWebDriverStarted()) {
-            Selenide.clearBrowserLocalStorage();
-        }
-        openApp();
+        givenAppOpened();
         add(texts);
     }
 
@@ -74,6 +171,14 @@ public class TodoEndToEndTests extends BaseTest {
 
     private void todosShouldBe(String... todoTexts) {
         todos.filter(visible).shouldHave(exactTexts(todoTexts));
+    }
+
+    private void completedTodosShouldBe(String... todoTexts) {
+        todos.filterBy(Condition.cssClass("completed")).shouldHave(exactTexts(todoTexts));
+    }
+
+    private void completedTodosShouldBeEmpty() {
+        todos.filterBy(Condition.cssClass("completed")).shouldHave(size(0));
     }
 
     private void edit(String text, String editedText) {
