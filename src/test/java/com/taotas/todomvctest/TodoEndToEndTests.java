@@ -81,7 +81,16 @@ public class TodoEndToEndTests extends BaseTest {
     }
 
     @Test
-    public void testEditСompleted() {
+    public void testEditWithTab() {
+        givenAppOpenedWith("a", "b", "c");
+
+        editByTab("b", "b edited");
+        todosShouldBe("a", "b edited", "c");
+        itemsLeftShouldBe(3);
+    }
+
+    @Test
+    public void testEditCompleted() {
         givenAppOpenedWith("a", "b", "c");
         toggle("b");
 
@@ -217,6 +226,10 @@ public class TodoEndToEndTests extends BaseTest {
 
     private void edit(String text, String editedText) {
         startEdit(text, editedText).pressEnter();
+    }
+
+    private void editByTab(String text, String editedText) {
+        startEdit(text, editedText).pressTab();
     }
 
     private void toggle(String text) {
