@@ -48,51 +48,81 @@ public class TodoEndToEndTests extends BaseTest {
     }
 
     @Test
-    public void testAddingNewTask() {
+    public void testTodosEmptyWhenOpening() {
         givenAppOpened();
 
         verifyTodosEmpty();
+    }
+
+    @Test
+    public void testAddingTodos() {
+        givenAppOpened();
+
         add("a");
         todosShouldBe("a");
-        verifyCounter(1);
+        itemsLeftShouldBe(1);
+
+        add("b");
+        todosShouldBe("a", "b");
+        itemsLeftShouldBe(2);
+
+        add("c");
+        todosShouldBe("a", "b", "c");
+        itemsLeftShouldBe(3);
     }
 
     @Test
-    public void testEditingExistingTask() {
+    public void testEditWithEnter() {
         givenAppOpenedWith("a", "b", "c");
+
         edit("b", "b edited");
         todosShouldBe("a", "b edited", "c");
+        itemsLeftShouldBe(3);
     }
 
     @Test
-    public void testChangingExistingTaskToEmpty() {
+    public void testEditСompleted() {
         givenAppOpenedWith("a", "b", "c");
+        toggle("b");
+
+        edit("b", "b edited");
+        todosShouldBe("a", "b edited", "c");
+        itemsLeftShouldBe(2);
+    }
+
+    @Test
+    public void testDeleteTodoByChangeTextToEmpty() {
+        givenAppOpenedWith("a", "b", "c");
+
         edit("b", "");
         todosShouldBe("a", "c");
     }
 
     @Test
-    public void testCompletingTask() {
+    public void testCompletingTodo() {
         givenAppOpenedWith("a", "b", "c");
-        verifyCounter(3);
+
+        itemsLeftShouldBe(3);
         toggle("b");
-        verifyCounter(2);
+        itemsLeftShouldBe(2);
         completedTodosShouldBe("b");
         todosShouldBe("a", "b", "c");
     }
 
     @Test
-    public void testCompletingAllTasks() {
+    public void testCompletingAllTodos() {
         givenAppOpenedWith("a", "b", "c");
+
         completeAllTodos();
         clearCompleted();
         verifyTodosEmpty();
     }
 
     @Test
-    public void testUncompletingTask() {
+    public void testUncompletingTodo() {
         givenAppOpenedWith("a", "b", "c");
-        verifyCounter(3);
+
+        itemsLeftShouldBe(3);
         toggle("b");
         completedTodosShouldBe("b");
         toggle("b");
@@ -103,6 +133,7 @@ public class TodoEndToEndTests extends BaseTest {
     @Test
     public void testCancellingOfEditingTodo() {
         givenAppOpenedWith("a", "b", "c");
+
         cancelEdit("b", " to be canceled");
         todosShouldBe("a", "b", "c");
     }
@@ -110,15 +141,17 @@ public class TodoEndToEndTests extends BaseTest {
     @Test
     public void testDeletingTodo() {
         givenAppOpenedWith("a", "b", "c");
-        verifyCounter(3);
+
+        itemsLeftShouldBe(3);
         delete("b");
         todosShouldBe("a", "c");
-        verifyCounter(2);
+        itemsLeftShouldBe(2);
     }
 
     @Test
     public void testDeletingOnlyOneAddedTodo() {
         givenAppOpenedWith("a");
+
         delete("a");
         verifyTodosEmpty();
     }
@@ -127,6 +160,7 @@ public class TodoEndToEndTests extends BaseTest {
     public void testClearingCompletedTodos() {
         givenAppOpenedWith("a", "b", "c");
         toggle("b");
+
         clearCompleted();
         todosShouldBe("a", "c");
         completeAllTodos();
@@ -138,7 +172,7 @@ public class TodoEndToEndTests extends BaseTest {
         $("#toggle-all").click();
     }
 
-    private void verifyCounter(int counter) {
+    private void itemsLeftShouldBe(int counter) {
         var c = (counter == 1) ? "1 item left" : String.format("%d items left", counter);
         $("#todo-count").shouldHave(text(c));
     }
