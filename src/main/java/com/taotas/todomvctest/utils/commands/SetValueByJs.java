@@ -10,8 +10,8 @@ import org.openqa.selenium.WebElement;
 import javax.annotation.Nonnull;
 
 public class SetValueByJs implements Command<SelenideElement> {
-    private final JavaScript js = new JavaScript("set-value-without-blur.js");
-    private final String text;
+    public final JavaScript js = new JavaScript("set-value-without-blur.js");
+    public final String text;
 
     public SetValueByJs(String text) {
         this.text = text;
