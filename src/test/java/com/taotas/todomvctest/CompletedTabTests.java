@@ -2,9 +2,8 @@ package com.taotas.todomvctest;
 
 import com.taotas.todomvctest.pages.TodoMvcPage;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.support.ui.Sleeper;
 
-public class CompletedEndToEndTests extends BaseTest{
+public class CompletedTabTests extends BaseTest{
     private TodoMvcPage todoMvc = new TodoMvcPage();
 
     @Test
