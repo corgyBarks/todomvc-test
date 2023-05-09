@@ -1,58 +1,64 @@
 package com.taotas.todomvctest;
 
-import com.taotas.todomvctest.pages.TodoMvcPage;
+import com.taotas.todomvctest.pages.TodoMvc;
 import org.junit.jupiter.api.Test;
 
 public class ActiveTabTests extends BaseTest{
-    private TodoMvcPage todoMvc = new TodoMvcPage();
+    private TodoMvc todoMvc = new TodoMvc();
 
     @Test
     public void addTodo(){
-        todoMvc.givenAppOpenedWith("a", "b", "c");
-        todoMvc.filterActive();
+        todoMvc.givenOpenedAtFilterActiveWith("a", "b", "c");
 
         todoMvc.add("added on active");
+
+        todoMvc.visibleTodosShouldBe("a", "b", "c", "added on active");
         todoMvc.activeTodosShouldBe("a", "b", "c", "added on active");
         todoMvc.itemsLeftShouldBe(4);
     }
 
     @Test
     public void completeTodo() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
-        todoMvc.filterActive();
+        todoMvc.givenOpenedAtFilterActiveWith("a", "b", "c");
 
         todoMvc.toggle("b");
 
-        todoMvc.activeTodosShouldBe("a", "c");
-        todoMvc.filterCompleted();
-        todoMvc.completedTodosShouldBe("b");
+        todoMvc.visibleTodosShouldBe("a", "c");
+        todoMvc.activeTodosShouldBe("a","c");
         todoMvc.itemsLeftShouldBe(2);
     }
 
     @Test
     public void completeAll() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
-        todoMvc.filterActive();
+        todoMvc.givenOpenedAtFilterActiveWith("a", "b", "c");
 
         todoMvc.toggleAll();
 
+        todoMvc.visibleTodosShouldBeEmpty();
         todoMvc.activeTodosShouldBeEmpty();
-        todoMvc.filterCompleted();
-        todoMvc.completedTodosShouldBe("a", "b", "c");
         todoMvc.itemsLeftShouldBe(0);
     }
 
     @Test
+    public void activateAll() {
+        todoMvc.givenOpenedAtFilterActiveWith("a", "b", "c");
+        todoMvc.toggleAll();
+
+        todoMvc.toggleAll();
+        todoMvc.visibleTodosShouldBe("a", "b", "c");
+        todoMvc.activeTodosShouldBe("a", "b", "c");
+    }
+
+    @Test
     public void clearCompletedTodo() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
         todoMvc.toggle("b");
         todoMvc.filterActive();
 
         todoMvc.clearCompleted();
 
+        todoMvc.visibleTodosShouldBe("a", "c");
         todoMvc.activeTodosShouldBe("a", "c");
-        todoMvc.filterCompleted();
-        todoMvc.completedTodosShouldBeEmpty();
         todoMvc.itemsLeftShouldBe(2);
     }
 }

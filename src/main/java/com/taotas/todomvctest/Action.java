@@ -1,4 +1,4 @@
-package com.taotas.todomvctest.utils;
+package com.taotas.todomvctest;
 
 import com.codeborne.selenide.Command;
 import com.codeborne.selenide.SelenideElement;

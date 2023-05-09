@@ -1,9 +1,10 @@
 package com.taotas.todomvctest.pages;
 
 import com.codeborne.selenide.*;
-import com.taotas.todomvctest.BaseTest;
-import com.taotas.todomvctest.utils.Action;
+import com.taotas.todomvctest.Action;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import javax.lang.model.element.Element;
 
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
 import static com.codeborne.selenide.CollectionCondition.size;
@@ -12,8 +13,36 @@ import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class TodoMvcPage extends BaseTest {
-    public static final ElementsCollection todos = $$("#todo-list li");
+public class TodoMvc{
+    public static final ElementsCollection todos = $$("#todo-list > li");
+
+    private static final String COMPLETED_CLASS = "completed";
+
+    private static final String ACTIVE_CLASS = "active";
+
+    public void givenOpened() {
+        if (WebDriverRunner.hasWebDriverStarted()) {
+            Selenide.clearBrowserLocalStorage();
+        }
+        Selenide.open("/");
+        Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
+                "return Object.keys(require.s.contexts._.defined).length === 39;"));
+    }
+
+    public void givenOpenedWith(String... texts) {
+        givenOpened();
+        add(texts);
+    }
+
+    public void givenOpenedAtFilterActiveWith(String... todoTexts) {
+        givenOpenedWith(todoTexts);
+        filterActive();
+    }
+
+    public void givenOpenedAtFilterCompletedWith(String... todoTexts) {
+        givenOpenedWith(todoTexts);
+        filterCompleted();
+    }
 
     public void toggleAll() {
         $("#toggle-all").click();
@@ -23,24 +52,13 @@ public class TodoMvcPage extends BaseTest {
         $("#todo-count>strong").shouldHave(text(String.valueOf(counter)));
     }
 
-    public void verifyTodosEmpty() {
+    public void todosShouldBeEmpty() {
         todos.shouldHave(size(0));
     }
 
-    public void givenAppOpened() {
-        if (WebDriverRunner.hasWebDriverStarted()) {
-            Selenide.clearBrowserLocalStorage();
-        }
-        Selenide.open("/");
-        Selenide.Wait().until(ExpectedConditions.jsReturnsValue(
-                "return Object.keys(require.s.contexts._.defined).length === 39;"));
+    public void visibleTodosShouldBeEmpty() {
+        todos.filter(visible).shouldHave(size(0));
     }
-
-    public void givenAppOpenedWith(String... texts) {
-        givenAppOpened();
-        add(texts);
-    }
-
 
     public void add(String... texts) {
         for (String text : texts) {
@@ -48,24 +66,24 @@ public class TodoMvcPage extends BaseTest {
         }
     }
 
-    public void todosShouldBe(String... todoTexts) {
+    public void visibleTodosShouldBe(String... todoTexts) {
         todos.filter(visible).shouldHave(exactTexts(todoTexts));
     }
 
     public void completedTodosShouldBe(String... todoTexts) {
-        todos.filterBy(Condition.cssClass("completed")).shouldHave(exactTexts(todoTexts));
+        todos.filterBy(Condition.cssClass(COMPLETED_CLASS)).shouldHave(exactTexts(todoTexts));
     }
 
     public void activeTodosShouldBe(String... todoTexts) {
-        todos.filterBy(Condition.cssClass("active")).shouldHave(exactTexts(todoTexts));
+        todos.filterBy(Condition.cssClass(ACTIVE_CLASS)).shouldHave(exactTexts(todoTexts));
     }
 
     public void completedTodosShouldBeEmpty() {
-        todos.filterBy(Condition.cssClass("completed")).shouldHave(size(0));
+        todos.filterBy(Condition.cssClass(COMPLETED_CLASS)).shouldHave(size(0));
     }
 
     public void activeTodosShouldBeEmpty() {
-        todos.filterBy(Condition.cssClass("active")).shouldHave(size(0));
+        todos.filterBy(Condition.cssClass(ACTIVE_CLASS)).shouldHave(size(0));
     }
 
     public void edit(String text, String editedText) {

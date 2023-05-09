@@ -1,65 +1,68 @@
 package com.taotas.todomvctest;
 
-import com.taotas.todomvctest.pages.TodoMvcPage;
+import com.taotas.todomvctest.pages.TodoMvc;
 import org.junit.jupiter.api.Test;
 
 public class AllTabTests extends BaseTest {
-    private TodoMvcPage todoMvc = new TodoMvcPage();
+    private TodoMvc todoMvc = new TodoMvc();
+
     @Test
     public void addTodos() {
-        todoMvc.givenAppOpened();
-        todoMvc.verifyTodosEmpty();
+        todoMvc.givenOpened();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.verifyFooterIsHidden();
 
         todoMvc.add("a");
-        todoMvc.todosShouldBe("a");
+
+        todoMvc.visibleTodosShouldBe("a");
         todoMvc.itemsLeftShouldBe(1);
 
         todoMvc.add("b", "c");
-        todoMvc.todosShouldBe("a", "b", "c");
+
+        todoMvc.visibleTodosShouldBe("a", "b", "c");
         todoMvc.itemsLeftShouldBe(3);
     }
 
     @Test
     public void editWithEnter() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
 
         todoMvc.edit("b", "b edited");
 
-        todoMvc.todosShouldBe("a", "b edited", "c");
+        todoMvc.visibleTodosShouldBe("a", "b edited", "c");
         todoMvc.itemsLeftShouldBe(3);
     }
 
     @Test
-    public void editWhenFocusChanged() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+    public void editWithFocusChanged() {
+        todoMvc.givenOpenedWith("a", "b", "c");
 
         todoMvc.editByTab("a", "a edited");
 
-        todoMvc.todosShouldBe("a edited", "b", "c");
+        todoMvc.visibleTodosShouldBe("a edited", "b", "c");
     }
 
     @Test
     public void cancelEditing() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
 
         todoMvc.cancelEdit("b", " to be canceled");
 
-        todoMvc.todosShouldBe("a", "b", "c");
+        todoMvc.visibleTodosShouldBe("a", "b", "c");
     }
 
     @Test
     public void deleteByEditToEmpty() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
 
         todoMvc.edit("b", "");
 
-        todoMvc.todosShouldBe("a", "c");
+        todoMvc.visibleTodosShouldBe("a", "c");
     }
 
     @Test
     public void completeTodo() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
 
         todoMvc.toggle("b");
 
@@ -70,7 +73,7 @@ public class AllTabTests extends BaseTest {
 
     @Test
     public void completeAll() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
 
         todoMvc.toggleAll();
 
@@ -81,7 +84,7 @@ public class AllTabTests extends BaseTest {
 
     @Test
     public void completeAllWithSomeCompleted() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
         todoMvc.toggle("c");
 
         todoMvc.toggleAll();
@@ -93,7 +96,7 @@ public class AllTabTests extends BaseTest {
 
     @Test
     public void activateTodo() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
         todoMvc.toggle("c");
 
         todoMvc.toggle("c");
@@ -104,7 +107,7 @@ public class AllTabTests extends BaseTest {
 
     @Test
     public void activateAll() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
         todoMvc.toggleAll();
 
         todoMvc.toggleAll();
@@ -116,21 +119,23 @@ public class AllTabTests extends BaseTest {
 
     @Test
     public void deleteTodo() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
 
         todoMvc.delete("b");
-        todoMvc.todosShouldBe("a", "c");
+
+        todoMvc.visibleTodosShouldBe("a", "c");
         todoMvc.itemsLeftShouldBe(2);
 
         todoMvc.delete("a");
         todoMvc.delete("c");
-        todoMvc.verifyTodosEmpty();
+
+        todoMvc.todosShouldBeEmpty();
         todoMvc.verifyFooterIsHidden();
     }
 
     @Test
     public void clearCompletedTodo() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
         todoMvc.toggle("b");
 
         todoMvc.clearCompleted();
@@ -142,12 +147,12 @@ public class AllTabTests extends BaseTest {
 
     @Test
     public void clearCompletedAll() {
-        todoMvc.givenAppOpenedWith("a", "b", "c");
+        todoMvc.givenOpenedWith("a", "b", "c");
         todoMvc.toggleAll();
 
         todoMvc.clearCompleted();
 
-        todoMvc.verifyTodosEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.verifyFooterIsHidden();
     }
 }
