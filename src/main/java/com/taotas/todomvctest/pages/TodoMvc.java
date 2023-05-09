@@ -4,8 +4,6 @@ import com.codeborne.selenide.*;
 import com.taotas.todomvctest.Action;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import javax.lang.model.element.Element;
-
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.*;
@@ -16,9 +14,8 @@ import static com.codeborne.selenide.Selenide.$$;
 public class TodoMvc{
     public static final ElementsCollection todos = $$("#todo-list > li");
 
-    private static final String COMPLETED_CLASS = "completed";
-
-    private static final String ACTIVE_CLASS = "active";
+    private static final ElementsCollection activeTodos = todos.filterBy(Condition.cssClass("active"));
+    private static final ElementsCollection completedTodos = todos.filterBy(Condition.cssClass("completed"));
 
     public void givenOpened() {
         if (WebDriverRunner.hasWebDriverStarted()) {
@@ -53,10 +50,6 @@ public class TodoMvc{
     }
 
     public void todosShouldBeEmpty() {
-        todos.shouldHave(size(0));
-    }
-
-    public void visibleTodosShouldBeEmpty() {
         todos.filter(visible).shouldHave(size(0));
     }
 
@@ -66,24 +59,24 @@ public class TodoMvc{
         }
     }
 
-    public void visibleTodosShouldBe(String... todoTexts) {
+    public void todosShouldBe(String... todoTexts) {
         todos.filter(visible).shouldHave(exactTexts(todoTexts));
     }
 
     public void completedTodosShouldBe(String... todoTexts) {
-        todos.filterBy(Condition.cssClass(COMPLETED_CLASS)).shouldHave(exactTexts(todoTexts));
+        completedTodos.shouldHave(exactTexts(todoTexts));
     }
 
     public void activeTodosShouldBe(String... todoTexts) {
-        todos.filterBy(Condition.cssClass(ACTIVE_CLASS)).shouldHave(exactTexts(todoTexts));
+        activeTodos.shouldHave(exactTexts(todoTexts));
     }
 
     public void completedTodosShouldBeEmpty() {
-        todos.filterBy(Condition.cssClass(COMPLETED_CLASS)).shouldHave(size(0));
+        completedTodos.shouldHave(size(0));
     }
 
     public void activeTodosShouldBeEmpty() {
-        todos.filterBy(Condition.cssClass(ACTIVE_CLASS)).shouldHave(size(0));
+        activeTodos.shouldHave(size(0));
     }
 
     public void edit(String text, String editedText) {

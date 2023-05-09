@@ -11,18 +11,18 @@ public class EndToEndTest extends BaseTest{
         todoMvc.givenOpened();
         todoMvc.add("a", "b", "c");
 
-        todoMvc.visibleTodosShouldBe("a", "b", "c");
+        todoMvc.todosShouldBe("a", "b", "c");
 
         todoMvc.edit("b", "b edited");
         todoMvc.toggle("b edited");
         todoMvc.clearCompleted();
 
-        todoMvc.visibleTodosShouldBe("a", "c");
+        todoMvc.todosShouldBe("a", "c");
 
         todoMvc.cancelEdit("c", " to be canceled");
         todoMvc.delete("c");
 
-        todoMvc.visibleTodosShouldBe("a");
+        todoMvc.todosShouldBe("a");
     }
 
     @Test
@@ -31,13 +31,13 @@ public class EndToEndTest extends BaseTest{
         todoMvc.toggle("b");
 
         todoMvc.filterActive();
-        todoMvc.visibleTodosShouldBe("a", "c");
+        todoMvc.todosShouldBe("a", "c");
 
         todoMvc.filterCompleted();
-        todoMvc.visibleTodosShouldBe("b");
+        todoMvc.todosShouldBe("b");
 
         todoMvc.filterAll();
-        todoMvc.visibleTodosShouldBe("a", "b", "c");
+        todoMvc.todosShouldBe("a", "b", "c");
     }
 
 }

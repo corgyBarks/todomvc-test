@@ -14,12 +14,12 @@ public class AllTabTests extends BaseTest {
 
         todoMvc.add("a");
 
-        todoMvc.visibleTodosShouldBe("a");
+        todoMvc.todosShouldBe("a");
         todoMvc.itemsLeftShouldBe(1);
 
         todoMvc.add("b", "c");
 
-        todoMvc.visibleTodosShouldBe("a", "b", "c");
+        todoMvc.todosShouldBe("a", "b", "c");
         todoMvc.itemsLeftShouldBe(3);
     }
 
@@ -29,7 +29,7 @@ public class AllTabTests extends BaseTest {
 
         todoMvc.edit("b", "b edited");
 
-        todoMvc.visibleTodosShouldBe("a", "b edited", "c");
+        todoMvc.todosShouldBe("a", "b edited", "c");
         todoMvc.itemsLeftShouldBe(3);
     }
 
@@ -39,7 +39,7 @@ public class AllTabTests extends BaseTest {
 
         todoMvc.editByTab("a", "a edited");
 
-        todoMvc.visibleTodosShouldBe("a edited", "b", "c");
+        todoMvc.todosShouldBe("a edited", "b", "c");
     }
 
     @Test
@@ -48,7 +48,7 @@ public class AllTabTests extends BaseTest {
 
         todoMvc.cancelEdit("b", " to be canceled");
 
-        todoMvc.visibleTodosShouldBe("a", "b", "c");
+        todoMvc.todosShouldBe("a", "b", "c");
     }
 
     @Test
@@ -57,7 +57,7 @@ public class AllTabTests extends BaseTest {
 
         todoMvc.edit("b", "");
 
-        todoMvc.visibleTodosShouldBe("a", "c");
+        todoMvc.todosShouldBe("a", "c");
     }
 
     @Test
@@ -123,7 +123,7 @@ public class AllTabTests extends BaseTest {
 
         todoMvc.delete("b");
 
-        todoMvc.visibleTodosShouldBe("a", "c");
+        todoMvc.todosShouldBe("a", "c");
         todoMvc.itemsLeftShouldBe(2);
 
         todoMvc.delete("a");

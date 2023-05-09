@@ -12,7 +12,7 @@ public class CompletedTabTests extends BaseTest{
 
         todoMvc.add("added on completed");
 
-        todoMvc.visibleTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.completedTodosShouldBeEmpty();
 
         todoMvc.filterActive();
@@ -72,7 +72,7 @@ public class CompletedTabTests extends BaseTest{
 
         todoMvc.toggle("c");
 
-        todoMvc.visibleTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.completedTodosShouldBeEmpty();
     }
 
@@ -84,7 +84,7 @@ public class CompletedTabTests extends BaseTest{
 
         todoMvc.toggleAll();
 
-        todoMvc.visibleTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.completedTodosShouldBeEmpty();
     }
 
@@ -94,7 +94,7 @@ public class CompletedTabTests extends BaseTest{
 
         todoMvc.toggleAll();
 
-        todoMvc.visibleTodosShouldBe("a", "b", "c");
+        todoMvc.todosShouldBe("a", "b", "c");
         todoMvc.completedTodosShouldBe("a", "b", "c");
     }
 
@@ -106,7 +106,7 @@ public class CompletedTabTests extends BaseTest{
 
         todoMvc.clearCompleted();
 
-        todoMvc.visibleTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.completedTodosShouldBeEmpty();
 
         todoMvc.filterActive();
