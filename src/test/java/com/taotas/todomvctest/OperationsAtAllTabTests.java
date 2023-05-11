@@ -3,7 +3,7 @@ package com.taotas.todomvctest;
 import com.taotas.todomvctest.pages.TodoMvc;
 import org.junit.jupiter.api.Test;
 
-public class OperationsAllTabTests extends BaseTest {
+public class OperationsAtAllTabTests extends BaseTest {
     private TodoMvc todoMvc = new TodoMvc();
 
     @Test

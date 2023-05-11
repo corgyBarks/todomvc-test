@@ -3,7 +3,7 @@ package com.taotas.todomvctest;
 import com.taotas.todomvctest.pages.TodoMvc;
 import org.junit.jupiter.api.Test;
 
-public class OperationsCompletedTabTests extends BaseTest{
+public class OperationsAtCompletedTabTests extends BaseTest{
     private TodoMvc todoMvc = new TodoMvc();
 
     @Test
@@ -48,7 +48,7 @@ public class OperationsCompletedTabTests extends BaseTest{
 
     @Test
     public void deleteTodoWhenActiveEmpty() {
-        todoMvc.givenOpenedWith(  "c");
+        todoMvc.givenOpenedWith("c");
         todoMvc.toggle("c");
         todoMvc.filterCompleted();
 
