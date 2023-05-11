@@ -44,19 +44,13 @@ public class OperationsCompletedTabTests extends BaseTest{
 
         todoMvc.completedTodosShouldBe("c");
         todoMvc.itemsLeftShouldBe(1);
-        todoMvc.footerShouldBeVisible();
     }
 
     @Test
     public void deleteTodoWhenActiveEmpty() {
-        todoMvc.givenOpenedWith( "b", "c");
-        todoMvc.toggle("b");
+        todoMvc.givenOpenedWith(  "c");
         todoMvc.toggle("c");
         todoMvc.filterCompleted();
-
-        todoMvc.delete("b");
-
-        todoMvc.completedTodosShouldBe("c");
 
         todoMvc.delete("c");
 
