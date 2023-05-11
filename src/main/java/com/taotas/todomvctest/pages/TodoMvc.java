@@ -112,12 +112,8 @@ public class TodoMvc{
                 .execute(Action.JS.setValue(newText));
     }
 
-    public void verifyFooterIsHidden() {
+    public void footerShouldBeHidden() {
         $("#footer").shouldBe(hidden);
-    }
-
-    public void verifyFooterIsVisible() {
-        $("#footer").shouldBe(visible);
     }
 
     public void filterActive() {

@@ -3,7 +3,7 @@ package com.taotas.todomvctest;
 import com.taotas.todomvctest.pages.TodoMvc;
 import org.junit.jupiter.api.Test;
 
-public class CompletedTabTests extends BaseTest{
+public class OperationsCompletedTabTests extends BaseTest{
     private TodoMvc todoMvc = new TodoMvc();
 
     @Test
@@ -44,7 +44,7 @@ public class CompletedTabTests extends BaseTest{
 
         todoMvc.completedTodosShouldBe("c");
         todoMvc.itemsLeftShouldBe(1);
-        todoMvc.verifyFooterIsVisible();
+        todoMvc.footerShouldBeVisible();
     }
 
     @Test
@@ -61,7 +61,7 @@ public class CompletedTabTests extends BaseTest{
         todoMvc.delete("c");
 
         todoMvc.completedTodosShouldBeEmpty();
-        todoMvc.verifyFooterIsHidden();
+        todoMvc.footerShouldBeHidden();
     }
 
     @Test
