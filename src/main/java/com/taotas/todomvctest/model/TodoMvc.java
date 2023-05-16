@@ -1,13 +1,14 @@
-package com.taotas.todomvctest.pages;
+package com.taotas.todomvctest.model;
 
-import com.codeborne.selenide.*;
-import com.taotas.todomvctest.Action;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
@@ -79,37 +80,17 @@ public class TodoMvc{
         activeTodos.shouldHave(size(0));
     }
 
-    public void edit(String text, String editedText) {
-        startEdit(text, editedText).pressEnter();
-    }
-
-    public void editByTab(String text, String editedText) {
-        startEdit(text, editedText).pressTab();
-    }
-
     public void toggle(String text) {
         todos.findBy(exactText(text)).find(".toggle").click();
-
     }
 
     public void clearCompleted() {
         $("#clear-completed").click();
     }
 
-    public void cancelEdit(String text, String editedText) {
-        startEdit(text, editedText).pressEscape();
-    }
-
     public void delete(String text) {
         todos.findBy(exactText(text)).hover()
                 .find(".destroy").click();
-    }
-
-    public SelenideElement startEdit(String text, String newText) {
-        todos.findBy(exactText(text)).doubleClick();
-        return todos.findBy(cssClass("editing"))
-                .find(".edit")
-                .execute(Action.JS.setValue(newText));
     }
 
     public void footerShouldBeHidden() {
@@ -126,5 +107,9 @@ public class TodoMvc{
 
     public void filterAll() {
         $("[href*='#/']").click();
+    }
+
+    public EditableLabelItem editableLabel(String text){
+        return new EditableLabelItem(todos.findBy(exactText(text)));
     }
 }

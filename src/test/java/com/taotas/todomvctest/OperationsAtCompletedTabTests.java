@@ -1,6 +1,6 @@
 package com.taotas.todomvctest;
 
-import com.taotas.todomvctest.pages.TodoMvc;
+import com.taotas.todomvctest.model.TodoMvc;
 import org.junit.jupiter.api.Test;
 
 public class OperationsAtCompletedTabTests extends BaseTest{
@@ -27,7 +27,7 @@ public class OperationsAtCompletedTabTests extends BaseTest{
         todoMvc.toggle("b");
         todoMvc.filterCompleted();
 
-        todoMvc.edit("b", "b edited");
+        todoMvc.editableLabel("b").edit( "b edited");
 
         todoMvc.completedTodosShouldBe("b edited");
         todoMvc.itemsLeftShouldBe(2);
