@@ -1,6 +1,6 @@
 package com.taotas.todomvctest;
 
-import com.taotas.todomvctest.model.TodoMvc;
+import com.taotas.todomvctest.model.pages.TodoMvc;
 import org.junit.jupiter.api.Test;
 
 public class OperationsAtAllTabTests extends BaseTest {
@@ -27,7 +27,7 @@ public class OperationsAtAllTabTests extends BaseTest {
     public void editWithEnter() {
         todoMvc.givenOpenedWith("a", "b", "c");
 
-        todoMvc.editableLabel("b").edit("b edited");
+        todoMvc.edit("b", "b edited");
 
         todoMvc.todosShouldBe("a", "b edited", "c");
         todoMvc.itemsLeftShouldBe(3);
@@ -37,7 +37,7 @@ public class OperationsAtAllTabTests extends BaseTest {
     public void editWithFocusChanged() {
         todoMvc.givenOpenedWith("a", "b", "c");
 
-        todoMvc.editableLabel("a").editByTab("a edited");
+        todoMvc.editByTab("a", "a edited");
 
         todoMvc.todosShouldBe("a edited", "b", "c");
     }
@@ -46,7 +46,7 @@ public class OperationsAtAllTabTests extends BaseTest {
     public void cancelEditing() {
         todoMvc.givenOpenedWith("a", "b", "c");
 
-        todoMvc.editableLabel("b").cancelEdit(" to be canceled");
+        todoMvc.cancelEdit("b", " to be canceled");
 
         todoMvc.todosShouldBe("a", "b", "c");
     }
@@ -55,7 +55,7 @@ public class OperationsAtAllTabTests extends BaseTest {
     public void deleteByEditToEmpty() {
         todoMvc.givenOpenedWith("a", "b", "c");
 
-        todoMvc.editableLabel("b").edit("");
+        todoMvc.edit("b", "");
 
         todoMvc.todosShouldBe("a", "c");
     }

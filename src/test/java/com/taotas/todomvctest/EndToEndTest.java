@@ -1,6 +1,6 @@
 package com.taotas.todomvctest;
 
-import com.taotas.todomvctest.model.TodoMvc;
+import com.taotas.todomvctest.model.pages.TodoMvc;
 import org.junit.jupiter.api.Test;
 
 public class EndToEndTest extends BaseTest{
@@ -13,13 +13,13 @@ public class EndToEndTest extends BaseTest{
 
         todoMvc.todosShouldBe("a", "b", "c");
 
-        todoMvc.editableLabel("b").edit("b edited");
+        todoMvc.edit("b","b edited");
         todoMvc.toggle("b edited");
         todoMvc.clearCompleted();
 
         todoMvc.todosShouldBe("a", "c");
 
-        todoMvc.editableLabel("c").cancelEdit(" to be canceled");
+        todoMvc.cancelEdit("c", " to be canceled");
         todoMvc.delete("c");
 
         todoMvc.todosShouldBe("a");

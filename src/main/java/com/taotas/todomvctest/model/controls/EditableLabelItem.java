@@ -1,4 +1,4 @@
-package com.taotas.todomvctest.model;
+package com.taotas.todomvctest.model.controls;
 
 import com.codeborne.selenide.SelenideElement;
 import com.taotas.todomvctest.Action;

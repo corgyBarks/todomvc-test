@@ -1,6 +1,6 @@
 package com.taotas.todomvctest;
 
-import com.taotas.todomvctest.model.TodoMvc;
+import com.taotas.todomvctest.model.pages.TodoMvc;
 import org.junit.jupiter.api.Test;
 
 public class OperationsAtActiveTabTests extends BaseTest{

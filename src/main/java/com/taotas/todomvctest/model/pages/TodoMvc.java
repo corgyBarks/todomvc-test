@@ -1,9 +1,10 @@
-package com.taotas.todomvctest.model;
+package com.taotas.todomvctest.model.pages;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
+import com.taotas.todomvctest.model.controls.EditableLabelItem;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
@@ -58,6 +59,16 @@ public class TodoMvc{
         for (String text : texts) {
             $("#new-todo").setValue(text).pressEnter();
         }
+    }
+
+    public void edit(String oldText, String newText) {
+        editableLabel(oldText).edit(newText);
+    }
+    public void editByTab(String oldText, String newText) {
+        editableLabel(oldText).editByTab(newText);
+    }
+    public void cancelEdit(String oldText, String newText) {
+        editableLabel(oldText).cancelEdit(newText);
     }
 
     public void todosShouldBe(String... todoTexts) {
